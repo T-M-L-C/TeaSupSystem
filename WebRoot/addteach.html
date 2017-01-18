@@ -1,0 +1,469 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="新疆大学 监考报名" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="images/shortcut.ico">
+    <title>查看报名列表</title>
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="css/fonts/linecons/css/linecons.css">
+    <link rel="stylesheet" href="css/fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/xenon-core.css">
+    <link rel="stylesheet" href="css/xenon-forms.css">
+    <link rel="stylesheet" href="css/xenon-components.css">
+    <link rel="stylesheet" href="css/xenon-skins.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/myjs.js"></script>
+    <script src="js/cookie.js"></script>
+    <script src="js/ready.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+        <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        islogin(3);
+        var loginuser;
+        $.ajax({
+            type: "get",
+            url: "Login",
+            timeout: 20000,
+            cache: false,
+            data: {
+                action: 'Uid'
+            },
+            beforeSend: function(XMLHttpRequest) {
+
+            },
+            success: function(data, textStatus) {
+                if (data != '') {
+                    var user = getCookieValue("username");
+                    $('#username').html(user);
+                    loginuser = user;
+                }
+            },
+            complete: function(XMLHttpRequest, textStatus) {
+
+            },
+            error: function() {
+                alert("请求失败！");
+            }
+        });
+       });
+            $.ajax({
+            url: "Subject",
+            data: {
+                "action": "getexams"
+            },
+            type: "POST",
+            success: function(data) {
+                var t = JSON.parse(data);
+                var ops = $("#exams");
+                ops.html("");
+                for (var i = 0; i < t.length; i++) {
+                    ops.append("<option value=\"" + t[i].sub_no + "\">" + t[i].sub_name + "</option>");
+                };
+                if(t.length>0)
+                {
+                	$("#export").attr('href','Subject?action=passexamxls&sub_no='+t[0].sub_no);
+                	autoajaxfunc();
+                	autoajax('tno', autoajaxfunc);
+			        autoajax('tname', autoajaxfunc);
+			        autoajax('tstudy', autoajaxfunc);
+			        autoajax('texam', autoajaxfunc);
+			        autoajax('tstate', autoajaxfunc);
+					autoajax('exams',autoajaxfunc);
+					autoajax('tunit',autoajaxfunc);
+                }
+                ops.change(function (){
+                	$("#export").attr('href','Subject?action=passexamxls&sub_no='+$('#exams').val());
+                	     autoajaxfunc();
+                });
+             
+             
+            },
+            error:function ()
+            {
+                alert('加载失败');
+            }
+        });
+
+        $('#logout').click(function() {
+            exit();
+        });
+
+   function t(a, b, c) {
+            this.pname = a;
+            this.v = b;
+            this.compare = c;
+        };
+
+        function jdata() {
+            var sc = new Array();
+            ~(function statetransfer(v, arr) {
+                if (v < 3) {
+                    arr.push(new t('signstate', v, 1));
+                } else {
+                    arr.push(new t('signstate', 0, 1));
+                    arr.push(new t('schoolstate', v % 10, 1));
+                }
+            })($('#tstate').val(), sc);
+
+            sc.push(new t('teano', $('#tno').val()));
+            sc.push(new t('teaname', $('#tname').val()));
+            sc.push(new t('subordunit', $('#tunit').val()));
+            sc.push(new t('isstudy', $('#tstudy').val(),1));
+            sc.push(new t('exampass', $('#texam').val(),1));
+            sc.push(new t('sub_no',$("#exams").val() , 1));
+            return sc;
+        };
+		
+		
+    function autoajaxfunc() {
+        return page($('#pagenumber'), 10, 'Search?action=agreeSearch&username='+getCookieValue("username"), jdata, dataadd);
+    }
+
+    function dataadd(data) {
+        var item = jQuery.parseJSON(data);
+        if (item.teano == '0') {
+            $("#main-table").find("tbody").html('');
+            alert('没有匹配的人员信息');
+        } else {
+            $("#main-table").find("tbody").html('');
+            for (var i = 0; i < item.length; i++) {
+                add(item[i].teaname, item[i].teano, item[i].subordunit, item[i].signstate, item[i].schoolstate,item[i].isstudy,item[i].exampass);
+            }
+            location.hash = "#example-2_wrapper";
+        }
+    }
+
+    function add(name, no, location, signstate, schoolstate,study,exam) {
+        var n = $("#main-table").find("tbody").find("tr").length % 2;
+        var str = $("<tr role=\"row\" class=\"\"><td>mhk</td><td>1002</td><td>1002</td><td></td><td></td><td><a href=\"javascript:void(0);\" onclick=\"regedit('" + no + "');\" class=\"btn btn-secondary btn-sm btn-icon icon-left\">" +
+            "同意</a><a href=\"javascript:void(0);\" onclick=\"refuse('" + no + "');\" class=\"btn btn-danger btn-sm btn-icon icon-left\">" +
+            "拒绝</a></td></tr>");
+        if (n == 0) {
+            str.addClass("odd");
+        } else {
+            str.addClass("even");
+        }
+        var t = str.find("td");
+        $(t[0]).html(name);
+        $(t[1]).html(no);
+        $(t[2]).html(location);
+		$(t[3]).html(study==1?'已完成学习':'未完成学习');
+		$(t[4]).html(exam==1?'已完成考试':'未完成考试');
+		
+        var strstate = '';
+        if(schoolstate==0){
+            strstate="教务办审核通过，教务处审核通过";
+        }
+       else
+         if(schoolstate==1){
+             if(signstate==0){
+                strstate="教务办审核通过，教务处审核中";
+             }
+             else
+              if(signstate==1){
+                   strstate="教务办审核中，教务处审核中";
+              }
+              else
+               {
+                   strstate="教务办已经拒绝";
+               }
+         }else{
+               if(signstate==0){
+                  strstate="教务办审核通过，教务处已经拒绝";
+               }
+         }
+    
+		t.last().html(strstate);
+        $("#main-table").find("tbody").append(str);
+    }
+     var authority;
+    	 window.onunload = function() {   
+               exit();
+		};
+    </script>
+  </head>
+    
+  <body class="page-body">
+    <div class="settings-pane">
+        <a href="#" data-toggle="settings-pane" data-animate="true">
+            &times;
+        </a>
+    </div>
+    <div class="page-container">
+        <!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+        <!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+        <!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+        <!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+        <div class="sidebar-menu toggle-others fixed">
+            <div class="sidebar-menu-inner">
+                <header class="logo-env">
+                    <!-- logo -->
+                    <div class="logo">
+                        <a href="http://www.xju.edu.cn" class="logo-expanded">
+                            <img src="images/logo.png" width="80" alt="" />
+                        </a>
+                        <a href="http://www.xju.edu.cn" class="logo-collapsed">
+                            <img src="images/logo.png" width="40" alt="" />
+                        </a>
+                    </div>
+                    <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+                    <div class="mobile-menu-toggle visible-xs">
+                        <a href="#" data-toggle="user-info-menu">
+                            <i class="fa-bell-o"></i>
+                            <span class="badge badge-success">7</span>
+                        </a>
+                        <a href="#" data-toggle="mobile-menu">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </div>
+                </header>
+                <ul id="main-menu" class="main-menu">
+                    <!-- add class "multiple-expanded" to allow multiple submenus to open -->
+                    <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+                    <li>
+                        <a href="userinfo3.jsp">
+                            <i class="linecons-cog"></i>
+                            <span class="title">个人资料</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="upload.jsp">
+                            <i class="linecons-desktop"></i>
+                            <span class="title">上传文件管理</span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="upload.jsp">
+                                    <span class="title">上传资源</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="manage.jsp">
+                                    <span class="title">管理资源</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="addexam.jsp">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加考试信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="addpaper.jsp">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加试卷</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="AddUserInfor.html">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加人员信息</span>
+                        </a>
+                    </li>
+                    <li class="active opened active">
+                        <a href="addteach.html">
+                            <i class="linecons-star"></i>
+                            <span class="title">教师考试情况</span>
+                        </a>
+                    </li>
+                      <li class="active opened active">
+		                        <a href="editGuide.jsp">
+		                            <i class="linecons-star"></i>
+		                            <span class="title">修改操作说明</span>
+		                        </a>
+                   		  </li>
+					   <li>
+                          <a href="homenews.jsp">
+                              <i class="linecons-star"></i>
+                              <span class="title">添加通知</span>
+                         </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            <!-- User Info, Notifications and Menu Bar -->
+            <nav class="navbar user-info-navbar" role="navigation">
+                <!-- Left links for user info navbar -->
+                <ul class="user-info-menu left-links list-inline list-unstyled">
+                    <li class="hidden-sm hidden-xs">
+                        <a href="#" data-toggle="sidebar">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </li>
+                    <li class="dropdown hover-line">
+                        <a href="#" data-toggle="dropdown">
+                            <i class="fa-envelope-o"></i>
+                            <span class="badge badge-green">1</span>
+                        </a>
+                        <ul class="dropdown-menu messages">
+                            <li>
+                                <ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+                                    <li class="active">
+                                        <!-- "active" class means message is unread -->
+                                        <a href="#">
+                                            <span class="line">
+                                                <strong>使用帮助</strong>
+                                            </span>
+                                            <span class="line desc small">
+                                                请仔细阅读，会对您有帮助的！
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="external">
+                                <a href="blank-sidebar.html">
+                                    <span>All Messages</span>
+                                    <i class="fa-link-ext"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Right links for user info navbar -->
+                <ul class="user-info-menu right-links list-inline list-unstyled">
+                    <li class="dropdown user-profile">
+                        <a href="" data-toggle="dropdown">
+                            <span id="username">
+                               
+                            </span>
+                            <span>
+                                ，欢迎您！
+                            </span>
+                        </a>
+                    </li>
+                    <li class="dropdown user-profile">
+                        <a href="" data-toggle="dropdown" id="logout">
+                            <span>
+                                退出登录
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+    
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="color: red; font-size: 20px">教师考试情况</h3>
+                    <br>
+                    <label class="form-control col-sm-4" style="width: 300px">选择考试科目:</label>
+                    <div class="col-sm-6">
+                        <select id="exams" class="form-control" >
+                           
+                        </select>
+                    </div>
+                    <button style="width:200px;background-color:lightblue;" class="form-control">
+                    <a href="javascript:void(0);" id="export" >导出报名该考试的教师信息</a>
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <div id="example-2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <table class="table table-bordered table-striped dataTable no-footer" id="main-table" role="grid" aria-describedby="example-2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th rowspan="1" colspan="1" style="width: 15%;">教师姓名</th>
+                                    <th rowspan="1" colspan="1" style="width: 15%;">教师工号</th>
+                                    <th rowspan="1" colspan="1" style="width: 15%;">所在学院</th>
+                                    <th rowspan="1" colspan="1" style="width: 15%;">学习进度</th>
+                                    <th rowspan="1" colspan="1" style="width: 15%;">考试进度</th>
+                                    <th rowspan="1" colspan="1" style="width: 15%;">意见</th>
+                                </tr>
+                                <tr role="row">
+                                    <th>
+                                        <input type="text" id="tname">
+                                    </th>
+                                    <th>
+                                        <input type="text" id="tno">
+                                    </th>
+                                    <th>
+                                        <input type="text" id="tunit" >
+                                    </th>
+                                    <th>
+                                        <select id="tstudy">
+                                            <option value="" selected="">全部</option>
+                                            <option value="0">未完成学习</option>
+                                            <option value="1">已完成学习</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="texam">
+                                            <option value="" selected="">全部</option>
+                                            <option value="0">未完成考试</option>
+                                            <option value="1">已完成考试</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="tstate">
+                                            <option value="" selected="">全部</option>
+                                            <option value="0">教务办审核通过</option>
+                                            <option value="1">教务办审核中</option>
+                                            <option value="2">教务办已经拒绝</option>
+                                            <option value="10">教务处审核通过</option>
+                                            <option value="11">教务处审核中</option>
+                                            <option value="12">教务处已经拒绝</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="middle-align"></tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="dataTables_info" id="example-2_info" role="status" aria-live="polite"></div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="dataTables_paginate paging_simple_numbers" id="pagenumber">
+                                    <ul class="pagination"><li class="paginate_button  disabled" aria-controls="example-2" tabindex="0"><a href="#">上一页</a></li><li class="paginate_button  active" aria-controls="example-2" tabindex="0"><a href="#">1</a></li><li class="paginate_button  disabled" aria-controls="example-2" tabindex="0"><a href="#">下一页</a></li></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                     </div>
+            <!-- Main Footer -->
+            <!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+            <!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+            <!-- Or class "fixed" to  always fix the footer to the end of page -->
+            <footer class="main-footer sticky footer-type-1">
+                <div class="footer-inner">
+                    <!-- Add your copyright text here -->
+                    <div class="footer-text">
+                        &copy; 2015
+                        <strong>Backbone Studio</strong>
+                    </div>
+                    <!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
+                    <div class="go-up">
+                        <a href="#" rel="go-top">
+                            <i class="fa-angle-up"></i>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <div class="page-loading-overlay">
+        <div class="loader-2"></div>
+    </div>
+     <!-- Bottom Scripts -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+    <script src="js/resizeable.js"></script>
+    <script src="js/xenon-toggles.js"></script>
+    <!-- JavaScripts initializations and stuff -->
+    <script src="js/xenon-custom.js"></script>
+</body>
+
+</html>

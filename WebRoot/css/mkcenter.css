@@ -1,0 +1,94 @@
+/* 答题卡 */
+#Scantron {width:958px;border:1px solid #b6d3eb;position:fixed;bottom:0; _position:absolute; _bottom:auto; _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,10)||0)));}
+#Scantron .title{height:38px;line-height:38px;border-bottom:1px solid #b5d3eb;background:url(../images/scan_til.png) repeat-x;position:relative;cursor:pointer;}
+#Scantron .title h3{float:left;padding:0 15px 0 20px;color:#045299;font-weight:bold;font-size:14px;background:url(../images/s_arrow_t.png) right center no-repeat;}
+#Scantron .title a{float:right;text-align:center;color:#1273c1;margin:4px 8px 0 0;}
+#Scantron .title a.delay, #Scantron .title a.xmode {border:1px solid #1273c1;width:80px;height:28px;line-height:28px;background:#fff;}
+#Scantron .title a.pause{background:url(../images/pause.png) 0 0 no-repeat;width:65px;height:30px;position:relative;z-index:10000;}
+#Scantron .title a.download{display:inline-block;position:absolute;left:100px; width:62px; height:30px; padding-left:20px; line-height:30px; background:url(../images/dlbtn_3.png)  no-repeat; font-size:12px; }
+#Scantron .title a.go_on{background:url(../images/go_on.png) 0 0 no-repeat;width:65px;height:30px;position:relative;z-index:10000;}
+#Scantron .title a.hand{background:url(../images/hand_btn.png) 0 0 no-repeat;width:55px;height:30px;}
+#Scantron .time{position:absolute;top:-6px;left:365px;height:45px;line-height:45px;width:225px;padding-left:50px;background:url(../images/Scantron_time.png) 0 0 no-repeat;}
+#Scantron .time span{color:#f58f1e;font-weight:bold;font-size:14px;}
+#Scantron .con{width:918px;background:#fff;padding:20px 20px;overflow:hidden;}
+#Scantron .con li{float:left;width:173px;margin:6px 5px;text-align:center;}
+#Scantron .con li a{display:inline-block;width:20px;height:20px;line-height:20px;margin:0 2px;text-align:center;border:1px solid #ddd;color:#666;}
+#Scantron .con li a.cur{border:1px solid #81ab25;background:#abd939;color:#fff;font-weight:bold;}
+#Scantron .con li a.nosure_cd{border:1px solid #f58f1e;background:#f8ae4f;color:#fff;font-weight:bold;}
+#Scantron .con li a:hover{text-decoration:none;}
+
+#content2{width:960px;margin:0 auto;margin-top:28px;}
+
+/* 实战演练-考试页面 */
+#examPage {width:940px;margin:10px auto 0;border:1px solid #f0f0f0;background:#fff;padding:10px 10px 20px 10px ;}
+#examPage .breadcum{height:28px; line-height:28px; font-family:simsun; color:#444;padding-left:10px;}
+#examPage .breadcum a{margin:0 5px}
+#examPage .prompt{height:28px;line-height:28px;margin:10px 0;padding-left:10px;background:#fcfbea;border:1px solid #ffe5b5;}
+#examPage h1{font-size:18px;height:30px;line-height:30px;font-family:"微软雅黑";color:#0c75a4;text-align:center;margin:20px 0;}
+#examPage .page_info{width:750px;margin:20px auto;border:1px solid #ddd;}
+#examPage .page_info .p_til{width:15px;padding:3px 10px;line-height:16px;color:#333;font-weight:bold;border-right:1px solid #ddd;}
+#examPage .page_info .p_con{width:680px;padding:7px 0 7px 30px;}
+#examPage .page_info .p_con span{display:inline-block;width:135px;height:28px;line-height:28px;}
+#examPage .page_info .p_con span.last{width:200px;}
+#examPage .page_info .p_con strong{font-weight:bold;color:#fc7e02;}
+#examPage .page_info .score{width:750px;height:34px;font-size:14px;text-align:center;border-top:1px solid #ddd;}
+#examPage .page_info .score span{display:inline-block;line-height:28px;margin-right:100px;}
+#examPage .page_info .score span strong{font-size:24px;color:#fe0000;font-family:"微软雅黑";}
+#examPage .topic_sel {text-align:center;margin:20px 0;}
+#examPage .topic_sel a{display:inline-block;zoom:1;margin:0 10px;height:30px;line-height:30px;color:#000;padding-left:15px;text-align:center;background:url(../images/btn200x30_b.png) left 0 no-repeat;}
+#examPage .topic_sel a span{display:inline-block;zoom:1;height:30px;line-height:30px;padding-right:15px;background:url(../images/btn200x30_b.png) right 0 no-repeat;vertical-align:top;}
+#examPage .topic_sel a.cur{background:url(../images/btn200x30_a.png) left 0 no-repeat;color:#fff;}
+#examPage .topic_sel a.cur span{background:url(../images/btn200x30_a.png) right 0px no-repeat;}
+#examPage .topic_sel a:hover{text-decoration:none;}
+#examPage .topic_area h3.topic_title{height:30px;line-height:30px;margin-bottom:10px;font-size:14px;color:#000;font-weight:bold;background:#edf5fc;padding-left:10px;letter-spacing:1px;}
+#examPage .topic_area h3.topic_title span{font-weight:normal;font-size:12px;}
+#examPage .topic_con {border:1px solid #ccc;padding:10px;margin-bottom:10px;position:relative;overflow:hidden;}
+#examPage .topic_con.cur {background:#fffee0;}
+#examPage .topic_con a.jiucuo{display:none;}
+#examPage .topic_con.hover {border:1px solid #2b6aaa}
+#examPage .topic_con.hover a.jiucuo{display:block;padding-left:20px;color:#000;font-size:14px;background:url(../images/jiucuo.gif) left center no-repeat;position:absolute;right:10px;top:8px;_top:10px;_right:20px;}
+#examPage .topic_con .exdescript{padding:0 100px 0 10px; line-height:1.8; font-size:14px; color:#444;word-break:break-all;}
+#examPage .topic_con .exdescript2{padding-bottom:10px; line-height:1.8; font-size:14px; color:#444;}
+#examPage .topic_con .exdescript p{margin-bottom:20px;}
+#examPage .topic_con .exdescript p .numberbg {display:inline-block; width:27px; height:18px; line-height:18px; margin-right:5px; background:url(../images/number_bg.gif) center top no-repeat; text-align:center; color:#fff;}
+#examPage .topic_con .exdescript p textarea{width:860px;height:150px;margin-top:10px;}
+#examPage .topic_con .chooseAnswer{line-height:39px;overflow:hidden;margin:10px auto;padding:0 10px;background:#f6f6f6; font-size:14px;border:1px dashed #858585;}
+#examPage .topic_con .chooseAnswer .q_area {margin-top:20px;}
+#examPage .topic_con .chooseAnswer .q_area span{float:left;margin:0 0px;}
+#examPage .topic_con .chooseAnswer .q_area textarea{width:790px;height:100px;padding:5px;color:#444;}
+#examPage .topic_con .answers span{float:left; display:block; _display:inline; margin-right:12px;}
+#examPage .topic_con .answers .option{width:57px; height:25px; margin-top:7px; padding-left:32px; line-height:25px; background:url(../images/exam_sp.png) -56px 0 no-repeat; color:#333; cursor:pointer; position:relative;}
+#examPage .topic_con .answers .option input{position:absolute; filter:alpha(opacity=0); opacity:0; cursor:pointer;}
+#examPage .topic_con .answers .selected{background:url(../images/exam_sp.png) 0 0 no-repeat; color:#fff;}
+#examPage .topic_con .feedback a{float:left; display:block; _display:inline; margin:7px 8px 0 8px; line-height:24px;overflow:hidden;}
+#examPage .topic_con .feedback a:hover{text-decoration:none;}
+#examPage .topic_con .feedback .nosure{width:78px; height:24px;padding-left:22px;background:url(../images/nosure.png) left center no-repeat;color:#000;}
+#examPage .topic_con .feedback .nosure.sign{background:url(../images/nosure2.png) left center no-repeat;color:#fc7e02;}
+#examPage .topic_con .feedback .shake{width:25px; height:25px; background:url(../images/wq_ico1.png) 0 0 no-repeat;}
+#examPage .topic_con .feedback .plag{width:25px; height:25px; background:url(../images/wq_ico2.png) 0 0 no-repeat;}
+#examPage .topic_con .feedback .query_ques{padding-left:21px;margin:9px 8px 9px;height:20px;background:url('../images/wq_ico3.png') no-repeat 0 center;line-height:20px;color:#f06000;}
+#examPage .topic_con .answers_2 span{float:left; display:block; _display:inline; margin-right:12px;}
+#examPage .topic_con .answers_2 .option{width:24px; height:25px; margin-top:7px; padding-left:32px; line-height:25px; background:url(../images/exam_sp.png) -134px -50px no-repeat; color:#333; cursor:pointer; position:relative;}
+#examPage .topic_con .answers_2 .option input{position:absolute; filter:alpha(opacity=0); opacity:0; cursor:pointer;}
+#examPage .topic_con .answers_2 .selected{background:url(../images/exam_sp.png) -78px -50px no-repeat; color:#fff;}
+#examPage .topic_con .answers_3 input{width:300px;padding:2px;height:20px;line-height:20px;color:#444;}
+#examPage .topic_con .contrastAns{background:#f8f8f8;border:1px dashed #999;width:830px;padding:20px 30px;margin:0 auto;font-size:14px;line-height:30px;}
+#examPage .topic_con .contrastAns .Rans {color:#389a0a;font-weight:bold;}
+#examPage .topic_con .contrastAns .Mans {color:#fe0000;font-weight:bold;}
+#examPage .topic_con .contrastAns .Mans span,#examPage .topic_con .contrastAns .Mans em{float:left;display:block;}
+#examPage .topic_con .contrastAns .Mans em{width:24px;height:24px;margin-left:10px;background:url(../images/qu_answers_yesorno.png) no-repeat;}
+#examPage .topic_con .contrastAns .Mans em.wrong{background-position:0 -50px;}
+#examPage .topic_con .contrastAns .ans_exec {color:#333;margin:10px 0;}
+#examPage .topic_con .contrastAns .ans_exec span.ans_span{display: inline-block;width: 80px;height: 21px;line-height: 21px;overflow: hidden;background: url(../images/exam_sp.png) -111px -75px no-repeat;color: white;text-align: center;}
+#examPage .topic_con .contrastAns .myscore{border:1px solid #ff6701;padding:0 10px;width:340px;height:32px;line-height:32px;font-size:12px;}
+#examPage .topic_con .contrastAns .myscore span{display:inline-block;color:#fe0000;height:22px;line-height:22px;padding-top:5px;font-weight:bold;margin:0 20px;}
+#examPage .topic_con .contrastAns .myscore span input{width:54px;height:18px;padding:2px;border:1px solid #fcbe92;background:#fef6f0;margin:-2px 5px 0 5px;}
+#examPage .topic_con .contrastAns .myscore a.f_scroce{display:inline-block;color:#0c75a4;height:25px;line-height:25px;width:56px;text-align:center;background:url(../images/f_score.png) 0 0 no-repeat;}
+#examPage .topic_con .contrastAns .myscore a:hover{text-decoration:none;}
+#examPage .topic_con .comment_til {text-align:right;height:26px;line-height:26px;margin:5px 0;}
+#examPage .topic_con .comment_til a{color:#666;margin:0 10px;}
+#examPage .topic_con .comment_til .com_btn{display:inline-block;width:76px;height:25px;line-height:25px;text-align:center;background:url(../images/com_btn.png) 0 0 no-repeat;}
+#examPage .topic_con .comment_til .com_btn:hover{text-decoration:none;}
+#examPage .handed_btn{display:block;margin:0 auto;width:146px;height:42px;background:url(../images/handed_btn.png) 0 0 no-repeat;}
+#examPage .quetype_btn{display:block;margin:0 auto;width:146px;height:42px;background:url(../images/quetype_btn.png) 0 0 no-repeat;}
+#examPage .self_btn{display:block;margin:0 auto;width:146px;height:42px;background:url(../images/self_finish.png) 0 0 no-repeat;}

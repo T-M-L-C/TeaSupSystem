@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="新疆大学 监考报名" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="images/shortcut.ico">
+    <title>添加教师信息</title>
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="css/fonts/linecons/css/linecons.css">
+    <link rel="stylesheet" href="css/fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/xenon-core.css">
+    <link rel="stylesheet" href="css/xenon-forms.css">
+    <link rel="stylesheet" href="css/xenon-components.css">
+    <link rel="stylesheet" href="css/xenon-skins.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/myjs.js"></script>
+    <script src="js/cookie.js"></script>
+    <script src="js/ready.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        islogin(3);
+        var loginuser = getCookieValue("username");
+        $('#username').html(loginuser);
+        $('#field-submit').click(function() {
+            var flag = ValidateUserInfor();
+            if (flag == false) {
+                alert('用户的各项信息均不为空');
+            } else {
+                $.ajax({
+                    type: "post",
+                    url: "Login",
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        action: 'adduser',
+                        teaname: $('#field-name').val(),
+                        teano: $('#field-no').val(),
+                        authority: $('#authority option:selected').val(),
+                        teatel: $('#field-number').val(),
+                        cardnumber: $('#card-number').val(),
+                        teasex: $('input[name="radio-sex"]:checked').val(),
+                        teaaddress: $('#address option:selected').val(),
+                        subordunit: $('#filed-board').val()
+                    },
+                    success: function(data) {
+                        var json = eval(data);
+                        if (json.id == 0) {
+                            alert('该工号已被使用，请您重新选择');
+                            $('#field-no').val("");
+                        } else
+                        if (json.id == 1) {
+                            alert('注册成功');
+                        }
+                    },
+                    error: function() {
+
+                    }
+                });
+            }
+
+        });
+        
+        
+        autoajax('tno', autoajaxfunc);
+        autoajax('tname', autoajaxfunc);
+        autoajax('ttel', autoajaxfunc);
+        autoajax('tunit', autoajaxfunc);
+        autoajax('tidcard', autoajaxfunc);
+        autoajax('taddress', autoajaxfunc);
+        autoajax('tsex', autoajaxfunc);
+        
+        autoajaxfunc();
+        
+        $('#logout').click(function() {
+            exit();
+        });
+    });
+
+	function autoajaxfunc() {
+          return page($('#pagenumber'), 10, 'Search?action=teacher&username='+getCookieValue("username"), jdata, dataadd); 
+    }
+
+    function dataadd(data) {
+    	var item = jQuery.parseJSON(data);
+        if (item.teano == '0') {
+            $("#main-table").find("tbody").html('');
+            alert('没有匹配的人员信息');
+        } else {
+            $("#main-table").find("tbody").html('');
+            for (var i = 0; i < item.length; i++) {
+                add(item[i].teano, item[i].teaname, item[i].teapwd, item[i].teasex, item[i].teatel,
+                 	item[i].subordunit, item[i].cashcardid, item[i].teaaddress);
+            }
+            location.hash = '#main-table';
+        }
+    }
+		function t(a, b, c) {
+            this.pname = a;
+            this.v = b;
+            this.compare = c;
+        };
+
+        function jdata() {
+            var sc = new Array();
+            sc.push(new t('teano', $('#tno').val()));
+            sc.push(new t('teaname', $('#tname').val()));
+            sc.push(new t('teatel', $('#ttel').val()));
+            sc.push(new t('subordunit', $('#tunit').val()));
+            sc.push(new t('cashcardid', $('#tidcard').val()));
+            sc.push(new t('teaaddress', $('#taddress').val()));
+            sc.push(new t('teasex', $('#tsex').val(),1));
+            return sc;
+        };
+    function ValidateUserInfor() {
+        var teaname = document.getElementById('field-name');
+        var teano = document.getElementById('field-no');
+        var teatel = document.getElementById('field-number');
+        var cardnumber = document.getElementById('card-number');
+        var subordunit = document.getElementById('filed-board');
+        if (teaname.value == "" || teano.value == "" || teatel.value == "" || cardnumber.value == "" || subordunit.value == "")
+            return false;
+        return true;
+    }
+    	 window.onunload = function() {   
+               exit();
+		}  ;
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+        <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="js/html5media.min.js"></script>
+</head>
+
+<body class="page-body">
+    <div class="settings-pane">
+        <a href="#" data-toggle="settings-pane" data-animate="true">
+            &times;
+        </a>
+        <div class="settings-pane-inner">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="user-info">
+                        <div class="user-image">
+                            <a href="extra-profile.html">
+                                <img src="images/user-2.png" class="img-responsive img-circle" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-container">
+        <!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+        <!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+        <!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+        <!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+        <div class="sidebar-menu toggle-others fixed">
+            <div class="sidebar-menu-inner">
+                <header class="logo-env">
+                    <!-- logo -->
+                    <div class="logo">
+                        <a href="http://www.xju.edu.cn" class="logo-expanded">
+                            <img src="images/logo.png" width="80" alt="" />
+                        </a>
+                        <a href="http://www.xju.edu.cn" class="logo-collapsed">
+                            <img src="images/logo.png" width="40" alt="" />
+                        </a>
+                    </div>
+                    <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+                    <div class="mobile-menu-toggle visible-xs">
+                        <a href="#" data-toggle="user-info-menu">
+                            <i class="fa-bell-o"></i>
+                            <span class="badge badge-success">7</span>
+                        </a>
+                        <a href="#" data-toggle="mobile-menu">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </div>
+                </header>
+                <ul id="main-menu" class="main-menu">
+                    <!-- add class "multiple-expanded" to allow multiple submenus to open -->
+                    <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+                    <li>
+                        <a href="userinfo3.jsp">
+                            <i class="linecons-cog"></i>
+                            <span class="title">个人资料</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="upload.jsp">
+                            <i class="linecons-desktop"></i>
+                            <span class="title">上传文件管理</span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="upload.jsp">
+                                    <span class="title">上传资源</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="manage.jsp">
+                                    <span class="title">管理资源</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="addexam.jsp">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加考试信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="addpaper.jsp">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加试卷</span>
+                        </a>
+                    </li>
+                    <li class="active opened active">
+                        <a href="AddUserInfor.html">
+                            <i class="linecons-note"></i>
+                            <span class="title">添加人员信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="addteach.html">
+                            <i class="linecons-star"></i>
+                            <span class="title">教师考试情况</span>
+                        </a>
+                    </li>
+                    <li class="active opened active">
+		                        <a href="editGuide.jsp">
+		                            <i class="linecons-star"></i>
+		                            <span class="title">修改操作说明</span>
+		                        </a>
+                   		  </li>
+                     <li>
+                       <a href="homenews.jsp">
+                            <i class="linecons-star"></i>
+                            <span class="title">添加通知</span>
+                       </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            <!-- User Info, Notifications and Menu Bar -->
+            <nav class="navbar user-info-navbar" role="navigation">
+                <!-- Left links for user info navbar -->
+                <ul class="user-info-menu left-links list-inline list-unstyled">
+                    <li class="hidden-sm hidden-xs">
+                        <a href="#" data-toggle="sidebar">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </li>
+                    <li class="dropdown hover-line">
+                        <a href="#" data-toggle="dropdown">
+                            <i class="fa-envelope-o"></i>
+                            <span class="badge badge-green">1</span>
+                        </a>
+                        <ul class="dropdown-menu messages">
+                            <li>
+                                <ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+                                    <li class="active">
+                                        <!-- "active" class means message is unread -->
+                                        <a href="#">
+                                            <span class="line">
+                                                <strong>使用帮助</strong>
+                                            </span>
+                                            <span class="line desc small">
+                                                请仔细阅读，会对您有帮助的！
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="external">
+                                <a href="blank-sidebar.html">
+                                    <span>All Messages</span>
+                                    <i class="fa-link-ext"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Right links for user info navbar -->
+                <ul class="user-info-menu right-links list-inline list-unstyled">
+                    <li class="dropdown user-profile" style="min-height: 75px;">
+                        <a href="" data-toggle="dropdown">
+                            <span id="username"></span>
+                            <span>
+                                ，欢迎您！
+                            </span>
+                        </a>
+                    </li>
+                    <li class="dropdown user-profile" style="min-height: 75px;">
+                        <a href="" data-toggle="dropdown" id="logout">
+                            <span>
+                                退出登录
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <script type="text/javascript">
+            function up() {
+                var t = $("#file1");
+                $("form").last().click();
+                //t.click();
+                // if(t.val()!="")
+                // {
+                //     $.ajaxFileUpload({
+                //         url:"addtea",
+                //         secureuri: false,
+                //         method:"POST",
+                //         fileElementId:"file1",
+                //         dataType:"json",
+                //         success:function (data)
+                //         {
+                //             var t = JSON.parse(data);
+                //             alert(data);
+                //         }
+                //     });
+
+                //     t.val("");
+                // }
+            }
+
+            function rinfo(r) {
+                alert(r);
+            }
+            </script>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">添加教师信息</h3>
+                            &nbsp;&nbsp;&nbsp; <select class="form-control" id="examteacher"
+									style="width: 50%;position: absolute;left:290px;top:-5px;">
+								</select>
+                            <div style="float:right;">
+                                <input type="button" class="form-control" style="width:200px;background-color:lightblue;" onclick="up()" value="批量导入人员信息">
+                            </div>
+                            <div class="btn btn-danger" id="userinfor"><a href=javascript:void(0); onclick="exportinfor()" style="text-decoration: none;">导出报名信息</a></div>
+                        </div>
+                        <div class="panel-body">
+                            <script>
+                            function show(temp) {
+	                                temp.next().css("visibility", "hidden");
+	                                temp.parent().removeClass("has-error");
+	                                if (!temp.parent().hasClass("has-success"))
+	                                    temp.parent().addClass("has-success");
+	                            }
+
+                          
+                            function hidden(temp) {
+                                temp.next().css("visibility", "");
+                                if (!temp.parent().hasClass("has-error"))
+                                    temp.parent().addClass("has-error");
+                            }
+
+                            function valno() {
+                                var v = event.srcElement.value;
+                                var temp = $(event.srcElement.parentElement);
+                                if (onlynumber(v)) {
+                                    show(temp);
+                                } else {
+                                    hidden(temp);
+                                }
+                            }
+
+                            function valnum() {
+                                var v = event.srcElement.value;
+                                var temp = $(event.srcElement.parentElement);
+                                if (number(v)) {
+                                    show(temp);
+                                } else {
+                                    hidden(temp);
+                                }
+                            }
+
+                            function valname() {
+                                var v = event.srcElement.value;
+                                var temp = $(event.srcElement.parentElement);
+                                if (isname(v)) {
+                                    show(temp);
+                                } else {
+                                    hidden(temp);
+                                }
+                            }
+
+                            function mysubmit() {
+                                var f = $("form");
+                                if (f.children().length > f.find(".has-success").length) {
+                                    $(f.children().not(f.find(".has-success"))[0]).find("input,select").focus();
+                                    return false;
+                                } else {
+                                    var name = $("#field-name").val();
+                                    var no = $("#field-no").val();
+                                    var sex = $($("input[type=radio]")[0]).attr("checked") == null ? 1 : 2;
+                                    var tel = $("#field - number").val();
+                                    var degree = $("#field-degree").val();
+                                    var professional = $("#field-professional").val();
+                                    var college = $("#field-college").val();
+
+
+                                }
+                            }
+                           
+                            </script>
+                            <form role="form" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F"> 姓名：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="field-name" placeholder="">
+                                    </div>
+                                    <div class="col-sm-2" style="visibility:hidden;">
+                                        <input type="text" value="姓名有误" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">员工编号：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="field-no" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">员工类型：</label>
+                                    <div class="col-sm-4">
+                                        <select id="authority" class="form-control">
+                                            <option value=0>教师</option>
+                                            <option value=1>教务办人员</option>
+                                            <option value=2>教务处人员</option>
+                                            <option value=3>门户维护人员</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-sm-4 control-label">性别：</label>
+                                    <div class="col-sm-4">
+                                        <p>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radio-sex" checked="checked" value=0> 男
+                                            </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <label class="radio-inline">
+                                                <input type="radio" name="radio-sex" value=1> 女
+                                            </label>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">联系电话：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="field-number" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">银行卡号：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="card-number" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">家庭住址：</label>
+                                    <div class="col-sm-4">
+                                        <select id="address" class="form-control">
+                                            <option value=1>本部</option>
+                                            <option value=2>本部附近</option>
+                                            <option value=3>南区</option>
+                                            <option value=4>南区附近</option>
+                                            <option value=5>北区</option>
+                                            <option value=6>北区附近</option>
+                                            <option value=7>其它</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1" style="color:#8DC63F">所在学院：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="filed-board" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="field-1"></label>
+                                    <div class="col-sm-2">
+                                        <input type="button" value="确认" class="form-control" id="field-submit" placeholder="">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="button" value="重置" class="form-control" id="field-reset" placeholder="">
+                                    </div>
+                                </div>
+                                <!--   <div class="form-group-separator"  id="newpwd" style="color: red;">
+                                      提示
+                                    </div> -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+            function change() {
+                var t = $(event.srcElement);
+                var p = t.parent();
+                var tds = p.find("td");
+                var npwd = "",
+                    opwd = "";
+                var v = prompt("新的" + $($("#main-table").find("th")[t.attr("name")]).html(), $(tds[t.attr("name")]).html());
+                if (v != null) {
+                    switch (t.attr("name")) {
+                        case "2":
+                            opwd = $(tds[2]).html();
+                            npwd = v;
+                            break;
+                        case "3":
+                            if (v == '男' || v == '女') {
+
+                            } else {
+                                alert("输入有误");
+                                return;
+                            }
+                            break;
+                        case "4":
+                            break;
+                        case "6":
+                            if (/[^\d]/.test(v)) {
+                                alert("只能有数字");
+                                return;
+                            }
+                            break;
+                    }
+                } else {
+                    return;
+                }
+
+                $(tds[t.attr("name")]).html(v);
+                switch ($(tds[7]).html()) {
+                    case "本部":
+                        $(tds[7]).html(1);
+                        break;
+                    case "本部附近":
+                        $(tds[7]).html(2);
+                        break;
+                    case "南区":
+                        $(tds[7]).html(3);
+                        break;
+                    case "南区附近":
+                        $(tds[7]).html(4);
+                        break;
+                    case "北区":
+                        $(tds[7]).html(5);
+                        break;
+                    case "北区附近":
+                        $(tds[7]).html(6);
+                        break;
+                    default:
+                        $(tds[7]).html(7);
+                        break;
+                }
+
+                $.ajax({
+                    type: "post",
+                    url: "Login",
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        action: 'corpwd',
+                        oldpwd: opwd,
+                        newpwd: npwd,
+                        conpwd: npwd,
+                        teaname: $(tds[1]).html(),
+                        teatel: $(tds[4]).html(),
+                        cardnumber: $(tds[6]).html(),
+                        teasex: $(tds[3]).html() == "男" ? "0" : "1",
+                        teaaddress: $(tds[7]).html(),
+                        subordunit: $(tds[5]).html(),
+                        teano: $(tds[0]).html()
+                    },
+                    success: function(data) {
+                        var item = eval(data);
+                        if (item.state == 'successful') {
+                            $('span[id=newpasswd]').html('');
+                            alert('个人信息修改成功');
+                            getpagecontent();
+                        } else
+                        if (item.state == 'failure') {
+                            $('span[id=newpasswd]').html('原始密码不正确。请重新输入！');
+                        } else {
+                            $('span[id=newpasswd]').html('');
+                            alert(item.state);
+                        }
+                    },
+                    error: function() {
+                        //window.location.href = "index.jsp";
+                    }
+                });
+            }
+
+            function add(no, name, pwd, sex, tel, partment, idcard, addr) {
+                var n = $("#main-table").find("tbody").find("tr").length % 2;
+                var str = $("<tr role=\"row\" class=\"\"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>" +
+                    "</tr>");
+                if (n == 0) {
+                    str.addClass("odd");
+                } else {
+                    str.addClass("even");
+                }
+                var t = str.find("td").attr("onclick", "change()");
+                $(t[0]).html(no).attr("name", "0");
+                $(t[1]).html(name).attr("name", "1");
+                $(t[2]).html(pwd).attr("name", "2");
+                $(t[3]).html(sex == 0 ? "男" : "女").attr("name", "3");
+                $(t[4]).html(tel).attr("name", "4");
+                $(t[5]).html(partment).attr("name", "5");
+                $(t[6]).html(idcard).attr("name", "6");
+                $(t[7]).html(addr).attr("name", "7");
+                $("#main-table").find("tbody").append(str);
+            }
+
+
+            function search() {
+                var k = $("#searchk").val();
+                if (k == null || k.length < 1) {
+                    alert("请输入关键字");
+                } else {
+                    $("#main-table").find("tbody").html(""); //清空table
+                    $.ajax({
+                        url: "Login", //url
+                        type: "post",
+                        data: {
+                            "action": "finduser",
+                            "key": k
+                        },
+                        success: function(data) {
+                         data = JSON.parse(data);
+                            if (data =='') {
+                                alert("没有匹配的人员信息");
+                                return;
+                            }
+                           
+                            for (var i = 0; i < data.length; i++) {
+                                add(data[i].teano, data[i].teaname, data[i].teapwd, data[i].teasex, data[i].teatel, data[i].subordunit, data[i].cashcardid, data[i].teaaddress);
+                            }
+
+                        }
+
+                    });
+                }
+            }
+            //获取上传的考试科目信息
+		       $.ajax({
+		        url:"Subject",
+		        data:{"action":"getexams"},
+		        type:"POST",
+		        success:function(data)
+		        {
+		            var t = JSON.parse(data);
+		            var ops = $("#exams,#examteacher");
+		            for (var i = 0; i < t.length; i++) {
+		                ops.append("<option value=\""+t[i].sub_no+"\">"+t[i].sub_name+"</option>");
+		            }
+		            $("#exams option").each(function(){
+		              var val=$(this).val();
+		              if($("#exams option[value='"+val+"']").length>0){
+		                 $("#exams option[value='"+val+"']:gt(0)").remove();
+		              }
+		            });
+		            $("#examteacher option").each(function(){
+		              var val=$(this).val();
+		              if($("#examteacher option[value='"+val+"']").length>0){
+		                 $("#examteacher option[value='"+val+"']:gt(0)").remove();
+		              }
+		            });
+		         /*   for(var i=0;i<t.length;i++){
+		             alert(t[i].sub_no+','+t[i].sub_name);
+		           } */
+		        }
+		    });
+		       function exportinfor() {
+                                var sel=document.getElementById("examteacher");
+
+         					     var index = sel.selectedIndex; // 选中索引
+
+         						 subno= sel.options[index].value;//要的值
+    
+                                window.location.href="Login?action=exportinfor&subno="+subno;
+                           }
+		    
+            </script>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">选择考试信息</h3>
+                              	<div class="col-sm-4">
+									<select class="form-control"  id="exams">
+									</select>
+									
+								</div>
+                                     <input type="button" value="批量插入备份考试名单" id="btnagree" class="btn btn-danger"  style="display: block;">
+                              <input type="button" value="重置备份名单" id="correct" class="btn btn-danger"  style="position: absolute;top: 2px;right: 300px; width:100px" >
+                            <div>  
+                     
+                                <input type="button" class="btn btn-danger" style="width:200px;background-color:lightblue;position: absolute;top:2px;right: 50px"  value="导出备份考试名单"  onclick="backMenu()"> 
+                              <script type="text/javascript">
+                                var backMenu=function(){
+                                         var subno=$("#exams").val();
+                                         if(subno=="" || subno==null){
+                                              alert("你还未添加考试，无法查看考试备份名单")
+                                             return;
+                                         }
+                                       window.location.href="Alternative?action=obtainReserveList&subno="+subno;
+                                    };
+                              </script>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div id="example-2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                <table class="table table-bordered table-striped dataTable no-footer" id="main-table" role="grid" aria-describedby="example-2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">考试工号</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">教师姓名</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">教师密码</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">教师性别</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">教师电话</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 15%;">教师单位</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 10%;">教师银行卡</th>
+                                            <th class="sorting" aria-controls="example-2" rowspan="1" colspan="1" style="width: 15%;">教师住址</th>
+                                        </tr>
+                                        <tr role="row">
+                                            <th ><input type="text" id="tno"     style="width: 127px;"></th>
+                                            <th ><input type="text" id="tname" style="width: 127px;"></th>
+                                            <th ></th>
+                                            <th ><select id="tsex" style="width: 127px;">
+                                            		<option value="">不限</option>
+                                            		<option value="0">男</option>
+                                            		<option value="1">女</option>
+                                            </select></th>
+                                            <th ><input type="text" id="ttel" style="width: 127px;"></th>
+                                            <th ><input type="text" id="tunit" style="width: 127px;"></th>
+                                            <th ><input type="text" id="tidcard" style="width: 127px;"></th>
+                                            <th ><input type="text" id="taddress" style="width: 127px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="middle-align">
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="dataTables_info" id="example-2_info" role="status" aria-live="polite"></div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="pagenumber">
+                                            <ul class="pagination">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="display:none;">
+                        <!-- Auto initialization -->
+                        <form action="addtea" style="min-height:250px;" class="dropzone">
+                            <input type="hidden" id="paperid" value="">
+                        </form>
+                    </div>
+                    <!-- Main Footer -->
+                    <!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+                    <!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+                    <!-- Or class "fixed" to  always fix the footer to the end of page -->
+                    <footer class="main-footer sticky footer-type-1">
+                        <div class="footer-inner">
+                            <!-- Add your copyright text here -->
+                            <div class="footer-text">
+                                &copy; 2015~2016
+                                <strong>BackBone Studio</strong>
+                            </div>
+                            <!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
+                            <div class="go-up">
+                                <a href="#" rel="go-top">
+                                    <i class="fa-angle-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+            <div class="page-loading-overlay">
+                <div class="loader-2"></div>
+            </div>
+            <!-- Bottom Scripts -->
+            <script src="js/bootstrap.min.js"></script>
+            <script src="js/TweenMax.min.js"></script>
+            <script src="js/resizeable.js"></script>
+            <script src="js/xenon-toggles.js"></script>
+            <!-- JavaScripts initializations and stuff -->
+            <script src="js/xenon-custom.js"></script>
+            <script src="js/dropzone/dropzone.min.js"></script>
+            <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                $("input[type=file]").attr("accept", ".xls,.xlsx"); //.removeAttr("multiple");
+                
+                $("#btnagree").click(function(){
+                    var exam=$("#exams").find("option:selected").text();
+                    if(exam==""){
+                      alert("您还未添加考试，不能添加备份考试名单");
+                      return;
+                    }
+                   if(!confirm("确认添加检索出的人员到"+"   "+'"'+exam+'"'+" "+"的考试中吗？"))
+                    return;
+              
+                  $.ajax({
+                       url:'Search?action=AddTeacherMenu&username='+getCookieValue("username"),
+                       type:"post",
+                       data:{
+                          'sc': JSON.stringify(jdata()),
+                          page:0,
+                          count:0,
+                          subno:$("#exams").val(),
+                          subname:$("#exams").find("option:selected").text()
+                       },
+                       success:function(data){
+                          if(data=="1"){
+                            alert("添加成功！");
+                          }
+                          else
+                          if(data==0){
+                              alert("该科目不能限制报名");
+                          }
+                       }
+                   });
+
+                 
+             });
+       });
+       
+              $("#correct").click(function(){
+                  if(!confirm("确认重置吗？"))
+                  return;
+                  $.ajax({
+                     url:"Alternative",
+                     type:"post",
+                     dataType:"json",
+                     data:{
+                       action:"resetValue"
+                     },
+                     success:function(data){
+                      var json=eval(data);
+                      if(json.id==0){
+                        alert("已成功清空备份名单");
+                      }
+                     }
+                  });
+              });
+              $("#field-reset").click(function(){
+                window.location.reload();
+              });
+            </script>
+</body>
+
+</html>
